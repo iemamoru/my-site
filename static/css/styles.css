@@ -5,12 +5,12 @@ body {
 }
 
 a {
-    color: blue; /* リンク文字を青色に設定 */
-    text-decoration: underline; /* 下線を追加 */
+    color: blue; 
+    text-decoration: underline; 
 }
 
 a:hover {
-    color: darkblue; /* ホバー時の色を濃い青に変更 */
+    color: darkblue; 
 }
 
 .btn-custom {
@@ -29,11 +29,11 @@ a:hover {
 }
 
 .navbar {
-    background-color: #ff0000 !important; /* Bright red color */
+    background-color: #ff0000 !important; 
 }
 
 .navbar-brand img {
-    height: 120px; /* Larger logo */
+    height: 120px; 
     width: auto;
 }
 
@@ -44,7 +44,7 @@ a:hover {
 }
 
 .nav-link:hover {
-    background-color: #f8f9fa; /* Light grey on hover */
+    background-color: #f8f9fa; 
     text-decoration: none;
 }
 
