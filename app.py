@@ -30,7 +30,7 @@ def get_user_language(ip):
             return 'ja' if country == 'JP' else 'en'
     except Exception as e:
         print(f"GeoIP error: {e}")
-        return 'en'  # Default to English
+        return 'ja'  # Default to English
 
 
 # Redirect root URL to language-specific home based on location
