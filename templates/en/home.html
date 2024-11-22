@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container text-center my-5">
+    <h1 class="mb-4">Welcome to Rinapen's official website.</h1>
+    <div class="row justify-content-center">
+        <!-- Each card is now responsive -->
+        <!-- Use col-6 for small screens, col-md-4 for medium, and col-lg-3 for large -->
+        
+        <!-- First Button -->
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="card bg-transparent border-0">
+                <img src="/static/img/api-icon.png" alt="API Icon" class="card-img-top mx-auto" style="width: 100px;">
+                <div class="card-body">
+                    <a href="/en/api" class="btn btn-custom btn-block">API Overview</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Button -->
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="card bg-transparent border-0">
+                <img src="/static/img/tools-icon.png" alt="Tools Icon" class="card-img-top mx-auto" style="width: 100px;">
+                <div class="card-body">
+                    <a href="/en/tools" class="btn btn-custom btn-block">How to Create Tools</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Third Button -->
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="card bg-transparent border-0">
+                <img src="/static/img/limits-icon.png" alt="Request Limits Icon" class="card-img-top mx-auto" style="width: 100px;">
+                <div class="card-body">
+                    <a href="/en/request-limits" class="btn btn-custom btn-block">Request Limits</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fourth Button -->
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="card bg-transparent border-0">
+                <img src="/static/img/error-icon.png" alt="Error Handling Icon" class="card-img-top mx-auto" style="width: 100px;">
+                <div class="card-body">
+                    <a href="/en/error-handling" class="btn btn-custom btn-block">Error Handling</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fifth Button -->
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="card bg-transparent border-0">
+                <img src="/static/img/database-icon.png" alt="Database Icon" class="card-img-top mx-auto" style="width: 100px;">
+                <div class="card-body">
+                    <a href="/en/database" class="btn btn-custom btn-block">Database Integration</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sixth Button -->
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="card bg-transparent border-0">
+                <img src="/static/img/agora-icon.png" alt="Agora Icon" class="card-img-top mx-auto" style="width: 100px;">
+                <div class="card-body">
+                    <a href="/en/agora" class="btn btn-custom btn-block">Agora Overview</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seventh Button -->
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="card bg-transparent border-0">
+                <img src="/static/img/open-chat-icon.png" alt="Open Chat Icon" class="card-img-top mx-auto" style="width: 100px;">
+                <div class="card-body">
+                    <a href="/en/open-chat" class="btn btn-custom btn-block">Open Chat</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Eighth Button -->
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="card bg-transparent border-0">
+                <img src="/static/img/rinapen-icon.png" alt="Rinapen Icon" class="card-img-top mx-auto" style="width: 100px;">
+                <div class="card-body">
+                    <a href="/en/rinapen" class="btn btn-custom btn-block">About Me</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+body {
+    background-color: red;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+    color: blue; /* リンク文字を青色に設定 */
+    text-decoration: underline; /* 下線を追加 */
+}
+
+a:hover {
+    color: darkblue; /* ホバー時の色を濃い青に変更 */
+}
+
+.btn-custom {
+    background-color: white;
+    color: red;
+    border: 1px solid white;
+}
+
+.btn-custom:hover {
+    background-color: red;
+    color: white;
+}
+
+.card-img-top {
+    margin-bottom: 10px;
+}
+
+.navbar {
+    background-color: #ff0000 !important; /* Bright red color */
+}
+
+.navbar-brand img {
+    height: 120px; /* Larger logo */
+    width: auto;
+}
+
+.nav-link {
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: #f8f9fa; /* Light grey on hover */
+    text-decoration: none;
+}
+
+pre {
+    font-family: "Courier New", Courier, monospace;
+    overflow-x: auto;
+}
+
+.sticky-top {
+    position: sticky;
+    top: 80px;
+}

@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-12">
+            <div class="p-4 mb-5" style="background: white; border-radius: 8px; color: black;">
+                <h2 class="mb-3">APIの基本的な概要</h2>
+                <p>
+                    APIの目的やその仕組みについてわかりやすく解説します。<br>
+                    YayのAPIの主な役割は、データの取得とアクションの実行にあります。<br>
+                    Yay上で実行されるほとんどのアクションは、このAPIを通じて行われています。これは、自分の端末だけでなく、相手の端末にもアクションを通知する必要があるためです。
+                </p>
+                <p>例えば、自分が「いいね」をした際に、それが相手に表示されなければ意味がありませんよね。</p>
+                <p>Yayの基本的なアクションには、以下のようなものがあります：</p>
+                <ul>
+                    <li>いいね</li>
+                    <li>投稿</li>
+                    <li>返信</li>
+                    <li>(´∀｀∩)↑age↑</li>
+                    <li>レター</li>
+                    <li>削除</li>
+                    <li>ブロック</li>
+                    <li>フォロー</li>
+                </ul>
+                <p>これらすべてに固有のAPIが用意されています。</p>
+            </div>
+
+            <div class="p-4 mb-5" style="background: white; border-radius: 8px; color: black;">
+                <h2 class="mb-3">例：いいね機能のAPIを使った説明</h2>
+                <p>Yay上で投稿に「いいね」をするときに使用されるAPIのURLは次のようになります。</p>
+                <pre class="bg-dark text-white p-3 rounded">
+https://api.yay.space/v2/posts/like</pre>
+                <p>このURLは、大きく3つの要素に分けて説明することができます。</p>
+                <ol>
+                    <li>
+                        <strong>https://api.yay.space/</strong><br>
+                        YayのAPI専用のドメインを表しています。
+                    </li>
+                    <li>
+                        <strong>/v2/posts/</strong><br>
+                        このAPIが投稿（posts）に関するものであることを明確に示しています。
+                    </li>
+                    <li>
+                        <strong>/like</strong><br>
+                        このAPIが「投稿に対して何を行うのか」を特定する要素です。
+                    </li>
+                </ol>
+            </div>
+
+            <div class="p-4 mb-5" style="background: white; border-radius: 8px; color: black;">
+                <h2 class="mb-3">GETとPOSTについて</h2>
+                
+                <h4>GETとは？</h4>
+                <p>
+                    GETは、必要な情報を取得するためのHTTPメソッドの一つです。  
+                    少量のデータを簡単に取得する場合、特に適しています。  
+                </p>
+                <p>
+                    GETリクエストでは <a href="#body"><strong>body</strong></a> を使用しません。  
+                    シンプルに情報を取得するために最適化された方法であることを覚えておきましょう。
+                </p>
+                
+                <h4>POSTとは？</h4>
+                <p>
+                    POSTは、情報を送信したり、新たな情報を取得したりする際に使用されるHTTPメソッドです。  
+                    POSTでは、データを<strong>body</strong>に追加して送信することができます。
+                </p>
+                <p>
+                    例えば、先ほど紹介した「いいね」をするためのAPIでは、リクエストの<strong>body</strong>に以下のようなデータを含めて送信します。
+                </p>
+                
+                <pre class="bg-dark text-white p-3 rounded">
+{
+    "post_ids": ["投稿のID"]
+}</pre>
+                
+                <p>
+                    なぜこのようにするのでしょうか？  
+                    APIのURLだけでは、どの投稿に対して「いいね」を付ければ良いのかが指定されていません。  
+                    そのため、API通信では<strong>body</strong>が不足しているとエラーが発生することがあります。
+                </p>
+                <p>
+                    なお、<strong>body</strong>に含めるデータには、必須項目と任意項目があります。  
+                    それについては後ほど詳しく説明します。
+                </p>
+            </div>
+            
+            <div class="p-4 mb-5" style="background: white; border-radius: 8px; color: black;">
+                <h2 class="mb-3">Bodyについて</h2>
+                <p>
+                    <strong>Body</strong>とは、POSTリクエストなどでサーバーに送信するデータが格納される部分です。  
+                    例えば、以下のようにJSON形式でデータを指定します：
+                </p>
+                
+                <pre class="bg-dark text-white p-3 rounded">
+{
+    "key": "value"
+}</pre>
+                
+                <p>
+                    <strong>Body</strong>は、APIリクエストが特定の条件を満たすために必要な情報を伝える重要な要素です。  
+                    入れるべきデータには、以下のような種類があります：
+                </p>
+                
+                <ul>
+                    <li><strong>必須項目</strong>: このデータが欠けているとリクエストが失敗します。</li>
+                    <li><strong>任意項目</strong>: なくてもリクエストは成功しますが、追加するとより細かい制御が可能です。</li>
+                </ul>
+            </div>
+            
+            <div class="p-4 mb-5" style="background: white; border-radius: 8px; color: black;">
+                <h2 class="mb-3">Headerについて</h2>
+                <p>
+                    <strong>Header</strong>とは、リクエストやレスポンスに含まれるメタ情報（追加情報）のことです。  
+                    例えば、リクエストを送る際に以下のような情報をHeaderに含めます：
+                </p>
+                
+                <ul>
+                    <li><strong>認証情報</strong>（例: トークンやAPIキー）</li>
+                    <li><strong>コンテンツの形式</strong>（例: JSON形式で送る場合は <code>Content-Type: application/json</code>）</li>
+                </ul>
+                
+                <p>
+                    YayのAPIにおいて、Headerには特に重要な項目として<strong>Authorization</strong>が含まれています。  
+                    この項目には、ユーザーのアクセストークンが記述されています。
+                </p>
+                
+                <h4>なぜアクセストークンが必要なのでしょうか？</h4>
+                <p>
+                    アクセストークンは、ユーザーがアクションを実行する際の「鍵」の役割を果たします。  
+                    Yayには大量のアカウントが存在しますが、このアクセストークンがあることで、「どのアカウントがこのアクションを実行しているのか」をAPIが判別できるのです。
+                </p>
+                <p>
+                    アクセストークンがなければ、「いいね」や「投稿」といったアクションは何も実行できません。  
+                    この仕組みによって、YayのAPIは適切なユーザー操作を認識し、安全にアクションを処理できるようになっています。
+                </p>
+                
+                <pre class="bg-dark text-white p-3 rounded">
+{
+    "Authorization": "Bearer your_token",
+    "Content-Type": "application/json"
+}</pre>
+            </div>
+            
+            <!-- コード例と説明 -->
+            <div class="p-4 mb-5" style="background: white; border-radius: 8px; color: black;">
+                <h2 class="mb-3">コード例と説明</h2>
+                <p>これまでに紹介した内容を基に記述すると、以下のようなコードになります：</p>
+                
+                <pre class="bg-dark text-white p-3 rounded">
+const body = JSON.stringify({
+    post_ids: ["20241123"]
+});
+            
+const header = {
+    "Authorization": "Bearer dewioyf93u3ur8931ry3f8eowhr3p91gr0", // 仮のトークン
+    "User-Agent": "Yay4.0",
+    "Content-Type": "application/json"
+};
+            
+const response = await fetch("https://api.yay.space/v2/posts/like", {
+    method: "POST",
+    body,
+    headers: header
+}); </pre>
+                
+                <p>
+                    上記のコードは少し複雑に見えるかもしれませんが、安心してください。以下で一つずつ丁寧に解説します。
+                </p>
+                
+                <h3>1. method</h3>
+                <p>
+                    <strong>method</strong> では、API通信で使用するHTTPメソッドを指定します。<br>
+                    今回の例では <strong>POST</strong> が使用されています。POSTはサーバーにデータを送信するためのメソッドです。<br>
+                    必要に応じて <strong>GET</strong>、<strong>DELETE</strong>、<strong>PUT</strong> などを選択する場合もあります。
+                </p>
+                
+                <h3>2. body</h3>
+                <p>
+                    <strong>body</strong> には、サーバーに送信するデータが含まれています。今回の例では、投稿のIDを送信するために次のようなJSON形式のデータを指定しています：
+                </p>
+                <pre class="bg-dark text-white p-3 rounded">
+{
+    "post_ids": ["20241123"]
+}</pre>
+                <p>
+                    <strong>post_ids</strong> に配列を使用している理由は、複数の投稿に「いいね」を付けることが可能だからです。<br>
+                    ただし、通常は1つの投稿に「いいね」を付けるケースが多いため、配列内に1つだけIDを指定することも一般的です。
+                </p>
+                
+                <h3>3. header</h3>
+                <p>
+                    <strong>header</strong> には、リクエストに必要な追加情報を含めます。今回の例では、以下のような情報が含まれています：
+                </p>
+                <ul>
+                    <li><strong>Authorization:</strong> ユーザーのアクセストークンです。このトークンを使用することで、どのユーザーがリクエストを送信しているかを特定できます。</li>
+                    <li><strong>User-Agent:</strong> アクセス元のアプリや端末の情報を示します。今回の例では <code>Yay4.0</code> を指定しています。</li>
+                    <li><strong>Content-Type:</strong> リクエストデータの形式を指定します。今回はJSONデータを送信するため、<code>application/json</code> を指定しています。</li>
+                </ul>
+                
+                <h3>4. fetch関数の仕組み</h3>
+                <p>
+                    <code>fetch</code> 関数は、指定したURLに対してリクエストを送信するJavaScriptの関数です。<br>
+                    この関数に <strong>method</strong>、<strong>body</strong>、<strong>headers</strong> を指定することで、APIリクエストをカスタマイズできます。
+                </p>
+                
+                <h3>まとめ</h3>
+                <p>
+                    APIリクエストは一見難しく見えるかもしれませんが、各部分を理解すればシンプルな仕組みです。<br>
+                    今回の例では、投稿に「いいね」を付ける機能を実現していますが、この形式を応用すれば他の操作（削除や更新）も簡単に行えます。
+                </p>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}
