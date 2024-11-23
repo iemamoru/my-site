@@ -19,6 +19,16 @@ allowed_pages = {
     "rinapen": False,
 }
 
+def get_user_ip():
+    # リバースプロキシ環境では'X-Forwarded-For'を確認
+    if request.headers.get('X-Forwarded-For'):
+        ip = request.headers['X-Forwarded-For'].split(',')[0]  # 複数のIPが含まれる場合は最初のものを取得
+    else:
+        ip = request.remote_addr or '8.8.8.8'  # ローカル環境ではデフォルトでGoogleのDNSを使用
+    # ローカルホストのIPをテスト用IPに置き換え
+    if ip == '127.0.0.1':
+        ip = '8.8.8.8'
+    return ip
 
 # Helper function to determine language based on geolocation
 def get_user_language(ip):
@@ -36,7 +46,7 @@ def get_user_language(ip):
 # Redirect root URL to language-specific home based on location
 @app.route('/')
 def index():
-    user_ip = request.remote_addr or '8.8.8.8'  # Default IP for testing
+    user_ip = get_user_ip()
     user_language = get_user_language(user_ip)
     return redirect(f'/{user_language}/home')
 
