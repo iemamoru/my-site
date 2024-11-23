@@ -37,6 +37,7 @@ def get_user_language(ip):
 @app.route('/')
 def index():
     if request.headers.getlist("X-Forwarded-For"):
+        print( request.headers.getlist("X-Forwarded-For"))
         user_ip = request.headers.getlist("X-Forwarded-For")[0]
     else:
         user_ip = request.remote_addr
