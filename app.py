@@ -38,7 +38,7 @@ def get_user_language(ip):
 def index():
     if request.headers.getlist("X-Forwarded-For"):
         user_ip = request.headers.getlist("X-Forwarded-For")[0]
-else:
+    else:
         user_ip = request.remote_addr
     user_language = get_user_language(user_ip)
     return redirect(f'/{user_language}/home')
