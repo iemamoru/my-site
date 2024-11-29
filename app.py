@@ -32,7 +32,7 @@ users = db.users
 
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER@app.route('/')
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 def index():
     if request.headers.getlist("X-Forwarded-For"):
         user_ip = request.headers.getlist("X-Forwarded-For")[0]
