@@ -25,7 +25,8 @@ client = MongoClient(mongo_uri)
 db = client.open_chat
 messages = db.messages
 
-UPLOAD_FOLDER = "uploads"
+UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
+
 CDN_BASE_URL = "https://cdn.9u9.jp"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 MAX_IMAGE_SIZE = 5 * 1024 * 1024  
@@ -165,18 +166,28 @@ def save_image(image_file):
     day = now.strftime("%d")
 
     # ファイル名の安全性を確保
-    filename = secure_filename(image_file.filename)
+    filename = secure_filename(image_file.filename[:100])  # ファイル名の長さを制限
 
     # 保存先パスを構築
     save_path = os.path.join(UPLOAD_FOLDER, year, month, day)
-    os.makedirs(save_path, exist_ok=True)
+    try:
+        os.makedirs(save_path, exist_ok=True)
+        print(f"Directory created or exists: {save_path}")
+    except Exception as e:
+        print(f"Failed to create directory {save_path}: {e}")
+        raise
 
     # 画像を保存
     image_path = os.path.join(save_path, filename)
-    image_file.save(image_path)
+    try:
+        image_file.save(image_path)
+        print(f"Image saved successfully at {image_path}")
+    except Exception as e:
+        print(f"Failed to save image at {image_path}: {e}")
+        raise
 
     # CDN URLを生成
-    cdn_url = f"{CDN_BASE_URL}/{UPLOAD_FOLDER}/{year}/{month}/{day}/{filename}"
+    cdn_url = f"{CDN_BASE_URL}/uploads/{year}/{month}/{day}/{filename}"
     return cdn_url
 
 @app.route('/open-chat/posts/new', methods=['POST'])
