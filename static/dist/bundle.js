@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
                   }
                   _context5.prev = 11;
                   _context5.next = 14;
-                  return axios.post('/open-chat/posts/new', formData, {
+                  return axios.post('https://api.9u9.jp/open-chat/posts/new', formData, {
                     headers: {
                       "X-CSRF-Token": csrfToken
                     }

@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     
         try {
-            const response = await axios.post('/open-chat/posts/new', formData, {
+            const response = await axios.post('https://api.9u9.jp/open-chat/posts/new', formData, {
                 headers: {
                     "X-CSRF-Token": csrfToken
                 }
