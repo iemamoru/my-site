@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, abort, request, jsonify, session, make_response
 from pymongo import MongoClient
+from flask_cors import CORS 
 import geoip2.database
 import datetime
 import hashlib
@@ -20,6 +21,12 @@ load_dotenv()
 
 app = Flask(__name__)
 
+cors = CORS(app, resources={
+    r"/*": {
+        "origins": ["https://9u9.jp"],  
+        "supports_credentials": True   
+    }
+})
 mongo_uri = os.getenv("MONGO_URI")
 client = MongoClient(mongo_uri)
 db = client.open_chat
@@ -327,7 +334,6 @@ def get_messages():
             "error_content": str(e)
         }), 500
 
-
 @app.route('/open-chat/posts/timeline/search', methods=['GET'])
 def search_posts():
     try:
@@ -385,23 +391,6 @@ def get_csrf_token():
 def set_csrf_token():
     if "csrf_token" not in session:
         session["csrf_token"] = secrets.token_hex(32)
-
-
-# @app.route('/<lang>/open-chat/reply/<message_id>', methods=['POST'])
-# def reply_to_message(lang, message_id):
-#     data = request.json
-#     reply_content = sanitize_input(data.get("content", ""))
-#     if not reply_content:
-#         return jsonify({"error": "Reply content cannot be empty."}), 400
-
-#     reply = {
-#         "content": reply_content,
-#         "timestamp": datetime.datetime.now()
-#     }
-#     result = messages.update_one({"_id": message_id}, {"$push": {"replies": reply}})
-#     if result.modified_count:
-#         return jsonify({"message": "Reply added successfully."}), 200
-#     return jsonify({"error": "Message not found."}), 404
 
 @app.errorhandler(404)
 def page_not_found(e):
