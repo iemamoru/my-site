@@ -126,8 +126,8 @@ def is_rate_limited(ip):
 def open_chat(lang):
     client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
 
-    if client_ip != ALLOWED_IP:
-        return jsonify({"error": "Access forbidden: Unauthorized IP address"}), 403
+    # if client_ip != ALLOWED_IP:
+    #     return jsonify({"error": "Access forbidden: Unauthorized IP address"}), 403
     if lang not in ['en', 'ja']:
         return redirect('/')
     if lang != "ja":
