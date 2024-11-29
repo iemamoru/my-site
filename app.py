@@ -130,8 +130,9 @@ def open_chat(lang):
         return jsonify({"error": "Access forbidden: Unauthorized IP address"}), 403
     if lang not in ['en', 'ja']:
         return redirect('/')
-    if lang not "ja":
-        return redirecr('/')
+    if lang != "ja":
+        return redirect('/')
+
 
     return render_template(f'{lang}/open_chat.html')
     
