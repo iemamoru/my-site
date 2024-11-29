@@ -1,11 +1,11 @@
 const path = require('path');
 
 module.exports = {
-    entry: './static/js/index.js', // JavaScriptエントリポイント
+    entry: './static/js/2_76bbd318-f394-633c-85c1-29f7f464a7d0_ja.js', 
     output: {
-        path: path.resolve(__dirname, 'static/dist'), // 出力先ディレクトリ
-        filename: 'bundle.js', // 出力ファイル名
-        publicPath: '/static/dist/', // Flaskからの参照用パス
+        path: path.resolve(__dirname, 'static/dist'), 
+        filename: 'bundle.js', 
+        publicPath: '/static/dist/', 
     },
     module: {
         rules: [
@@ -21,17 +21,17 @@ module.exports = {
                 },
             },
             {
-                test: /\.js$/, // JavaScriptトランスパイル（必要に応じて）
+                test: /\.js$/, // JavaScriptのトランスパイル
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env'], // ES6+対応
+                        presets: ['@babel/preset-env'], // ES6+のサポート
                     },
                 },
             },
         ],
     },
     devtool: 'source-map', // デバッグ用ソースマップ
-    mode: 'development', // モード: 'development' or 'production'
+    mode: 'development', // 'development' または 'production'
 };
