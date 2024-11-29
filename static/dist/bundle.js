@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
         currentPage = 1;
         postsPerPage = 60;
         csrfToken = "";
-        BASE_API_URL = "https://api.9u9.jp";
+        BASE_API_URL = "https://a.9u9.jp";
         fetchData = /*#__PURE__*/function () {
           var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(url) {
             var apiUrl, response, data;
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
                     break;
                   }
                   _context3.next = 4;
-                  return fetchData("/r/posts/timeline?page=".concat(page, "&limit=1"));
+                  return fetchData("/r/v1/posts/timeline?page=".concat(page, "&limit=1"));
                 case 4:
                   initialData = _context3.sent;
                   if (!initialData) {
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
                   return _context3.abrupt("return");
                 case 10:
                   _context3.next = 12;
-                  return fetchData("/r/posts/timeline?page=".concat(page, "&limit=").concat(postsPerPage));
+                  return fetchData("/r/v1/posts/timeline?page=".concat(page, "&limit=").concat(postsPerPage));
                 case 12:
                   data = _context3.sent;
                   if (data) {
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
               while (1) switch (_context4.prev = _context4.next) {
                 case 0:
                   page = _args4.length > 1 && _args4[1] !== undefined ? _args4[1] : 1;
-                  url = "/r/posts/timeline/search?keyword=".concat(encodeURIComponent(keyword), "&page=").concat(page, "&limit=").concat(postsPerPage);
+                  url = "/r/v1/posts/timeline/search?keyword=".concat(encodeURIComponent(keyword), "&page=").concat(page, "&limit=").concat(postsPerPage);
                   _context4.next = 4;
                   return fetchData(url);
                 case 4:
@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
                   }
                   _context5.prev = 11;
                   _context5.next = 14;
-                  return axios.post('https://api.9u9.jp/r/posts/new', formData, {
+                  return axios.post('https://a.9u9.jp/r/v1/posts/new', formData, {
                     headers: {
                       "X-CSRF-Token": csrfToken
                     }
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
         }();
         showPopup = function showPopup(postId, event) {
           var cleanPostId = typeof postId === 'string' ? postId.replace(/<\/?hit>/g, '') : postId;
-          axios.get("/r/posts/".concat(cleanPostId)).then(function (response) {
+          axios.get("/r/v1/posts/".concat(cleanPostId)).then(function (response) {
             var post = response.data.post;
             if (post) {
               var contentWithLinks = post.content.replace(/&gt;&gt;(\d+)/g, function (match, postId) {
