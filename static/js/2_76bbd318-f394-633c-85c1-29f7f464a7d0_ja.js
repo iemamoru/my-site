@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const postsPerPage = 60;
     let csrfToken = "";
 
-    const BASE_API_URL = "https://api.9u9.jp";
+    const BASE_API_URL = "https://a.9u9.jp";
 
     const fetchData = async (url) => {
         try {
@@ -113,14 +113,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const loadPage = async (page, isFirst = false) => {
         if (isFirst) {
-            const initialData = await fetchData(`/r/posts/timeline?page=${page}&limit=1`);
+            const initialData = await fetchData(`/r/v1/posts/timeline?page=${page}&limit=1`);
             if (initialData) {
                 page = initialData.pagination.total_pages;
             } else {
                 return;
             }
         }
-        const data = await fetchData(`/r/posts/timeline?page=${page}&limit=${postsPerPage}`);
+        const data = await fetchData(`/r/v1/posts/timeline?page=${page}&limit=${postsPerPage}`);
         if (data) {
             const { current_page, total_pages, total_messages } = data.pagination;
             updatePagination(current_page, total_pages, total_messages);
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     
     const fetchSearchResults = async (keyword, page = 1) => {
-        const url = `/r/posts/timeline/search?keyword=${encodeURIComponent(keyword)}&page=${page}&limit=${postsPerPage}`;
+        const url = `/r/v1/posts/timeline/search?keyword=${encodeURIComponent(keyword)}&page=${page}&limit=${postsPerPage}`;
         const data = await fetchData(url);
         if (data) {
             const { posts, search_info } = data;
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     
         try {
-            const response = await axios.post('https://api.9u9.jp/r/posts/new', formData, {
+            const response = await axios.post('https://a.9u9.jp/r/v1/posts/new', formData, {
                 headers: {
                     "X-CSRF-Token": csrfToken
                 }
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const showPopup = (postId, event) => {
         const cleanPostId = typeof postId === 'string' ? postId.replace(/<\/?hit>/g, '') : postId;
-        axios.get(`/r/posts/${cleanPostId}`)
+        axios.get(`/r/v1/posts/${cleanPostId}`)
             .then((response) => {
                 const post = response.data.post;
                 if (post) {
