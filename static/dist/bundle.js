@@ -7,7 +7,7 @@ function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyri
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
-  var chatBoard, postForm, contentInput, imageUpload, pageInfoElement, prevButton, nextButton, scrollUp, scrollDown, goLatest, goFirst, scrollToBottom, searchForm, popup, closePopup, useIdCheckbox, currentPage, postsPerPage, csrfToken, BASE_API_URL, fetchData, renderMessages, csrfEndpoint, fetchCsrfToken, escapeContent, loadPage, fetchSearchResults, postMessage, showPopup, quotePost, hidePopup, updatePagination, handleScrollButtons;
+  var chatBoard, postForm, contentInput, imageUpload, pageInfoElement, prevButton, nextButton, scrollUp, scrollDown, goLatest, goFirst, scrollToBottom, searchForm, popup, closePopup, useIdCheckbox, currentPage, postsPerPage, csrfToken, fetchData, renderMessages, csrfEndpoint, fetchCsrfToken, escapeContent, loadPage, fetchSearchResults, postMessage, showPopup, quotePost, hidePopup, updatePagination, handleScrollButtons;
   return _regeneratorRuntime().wrap(function _callee6$(_context6) {
     while (1) switch (_context6.prev = _context6.next) {
       case 0:
@@ -30,54 +30,52 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
         currentPage = 1;
         postsPerPage = 60;
         csrfToken = "";
-        BASE_API_URL = "https://a.9u9.jp";
         fetchData = /*#__PURE__*/function () {
           var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(url) {
-            var apiUrl, response, data;
+            var response, data;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
                   _context.prev = 0;
-                  apiUrl = "".concat(BASE_API_URL).concat(url);
-                  _context.next = 4;
-                  return fetch(apiUrl, {
+                  _context.next = 3;
+                  return fetch(url, {
                     headers: {
                       "Content-Type": "application/json"
                     }
                   });
-                case 4:
+                case 3:
                   response = _context.sent;
                   if (response.ok) {
-                    _context.next = 7;
+                    _context.next = 6;
                     break;
                   }
                   throw new Error("HTTP\u30A8\u30E9\u30FC: ".concat(response.status, " (").concat(response.statusText, ")"));
-                case 7:
-                  _context.next = 9;
+                case 6:
+                  _context.next = 8;
                   return response.json();
-                case 9:
+                case 8:
                   data = _context.sent;
                   if (!(data.result === "success")) {
-                    _context.next = 14;
+                    _context.next = 13;
                     break;
                   }
                   return _context.abrupt("return", data);
-                case 14:
+                case 13:
                   console.error("APIエラー:", data.message || "詳細なエラー情報なし");
                   return _context.abrupt("return", null);
-                case 16:
-                  _context.next = 22;
+                case 15:
+                  _context.next = 21;
                   break;
-                case 18:
-                  _context.prev = 18;
+                case 17:
+                  _context.prev = 17;
                   _context.t0 = _context["catch"](0);
                   console.error("ネットワークエラーが発生しました:", _context.t0);
                   return _context.abrupt("return", null);
-                case 22:
+                case 21:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, null, [[0, 18]]);
+            }, _callee, null, [[0, 17]]);
           }));
           return function fetchData(_x) {
             return _ref2.apply(this, arguments);
@@ -174,7 +172,7 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
                     break;
                   }
                   _context3.next = 4;
-                  return fetchData("/r/v1/posts/timeline?page=".concat(page, "&limit=1"));
+                  return fetchData("/oc/api/v1/posts/timeline?page=".concat(page, "&limit=1"));
                 case 4:
                   initialData = _context3.sent;
                   if (!initialData) {
@@ -188,7 +186,7 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
                   return _context3.abrupt("return");
                 case 10:
                   _context3.next = 12;
-                  return fetchData("/r/v1/posts/timeline?page=".concat(page, "&limit=").concat(postsPerPage));
+                  return fetchData("/oc/api/v1/posts/timeline?page=".concat(page, "&limit=").concat(postsPerPage));
                 case 12:
                   data = _context3.sent;
                   if (data) {
@@ -218,7 +216,7 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
               while (1) switch (_context4.prev = _context4.next) {
                 case 0:
                   page = _args4.length > 1 && _args4[1] !== undefined ? _args4[1] : 1;
-                  url = "/r/v1/posts/timeline/search?keyword=".concat(encodeURIComponent(keyword), "&page=").concat(page, "&limit=").concat(postsPerPage);
+                  url = "/oc/api/v1/posts/timeline/search?keyword=".concat(encodeURIComponent(keyword), "&page=").concat(page, "&limit=").concat(postsPerPage);
                   _context4.next = 4;
                   return fetchData(url);
                 case 4:
@@ -263,7 +261,7 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
                   }
                   _context5.prev = 11;
                   _context5.next = 14;
-                  return axios.post('https://a.9u9.jp/r/v1/posts/new', formData, {
+                  return axios.post('/oc/api/v1/posts/new', formData, {
                     headers: {
                       "X-CSRF-Token": csrfToken
                     }
@@ -295,7 +293,7 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
         }();
         showPopup = function showPopup(postId, event) {
           var cleanPostId = typeof postId === 'string' ? postId.replace(/<\/?hit>/g, '') : postId;
-          axios.get("/r/v1/posts/".concat(cleanPostId)).then(function (response) {
+          axios.get("/oc/api/v1/posts/".concat(cleanPostId)).then(function (response) {
             var post = response.data.post;
             if (post) {
               var contentWithLinks = post.content.replace(/&gt;&gt;(\d+)/g, function (match, postId) {
@@ -416,11 +414,11 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
             fetchSearchResults(keyword);
           }
         });
-        _context6.next = 48;
+        _context6.next = 47;
         return fetchCsrfToken();
-      case 48:
+      case 47:
         loadPage(currentPage, true);
-      case 49:
+      case 48:
       case "end":
         return _context6.stop();
     }
