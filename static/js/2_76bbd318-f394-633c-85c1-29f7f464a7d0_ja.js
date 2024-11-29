@@ -15,27 +15,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     const popup = document.getElementById('popup');
     const closePopup = document.getElementById('closePopup');
     const useIdCheckbox = document.getElementById("use_id");
-    const BASE_API_URL = "https://api.9u9.jp"
     let currentPage = 1;
     const postsPerPage = 60;
     let csrfToken = "";
 
+    const BASE_API_URL = "https://api.9u9.jp";
+
     const fetchData = async (url) => {
         try {
-            const api_url = `${BASE_API_URL}${url}`
-            const response = await fetch(api_url);
+            const apiUrl = `${BASE_API_URL}${url}`;
+            const response = await fetch(apiUrl, {
+                headers: {
+                    "Content-Type": "application/json", 
+                },
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTPエラー: ${response.status} (${response.statusText})`);
+            }
+    
             const data = await response.json();
+    
             if (data.result === "success") {
                 return data;
             } else {
-                console.error("データの取得に失敗しました。");
+                console.error("APIエラー:", data.message || "詳細なエラー情報なし");
                 return null;
             }
         } catch (error) {
-            console.error("エラーが発生しました:", error);
+            console.error("ネットワークエラーが発生しました:", error);
             return null;
         }
     };
+    
     const renderMessages = (messages, keyword = null) => {
         chatBoard.innerHTML = ''; 
         messages.forEach((msg, index) => {

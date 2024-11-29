@@ -7,7 +7,7 @@ function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyri
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
-  var chatBoard, postForm, contentInput, imageUpload, pageInfoElement, prevButton, nextButton, scrollUp, scrollDown, goLatest, goFirst, scrollToBottom, searchForm, popup, closePopup, useIdCheckbox, currentPage, postsPerPage, csrfToken, fetchData, renderMessages, csrfEndpoint, fetchCsrfToken, escapeContent, loadPage, fetchSearchResults, postMessage, showPopup, quotePost, hidePopup, updatePagination, handleScrollButtons;
+  var chatBoard, postForm, contentInput, imageUpload, pageInfoElement, prevButton, nextButton, scrollUp, scrollDown, goLatest, goFirst, scrollToBottom, searchForm, popup, closePopup, useIdCheckbox, currentPage, postsPerPage, csrfToken, BASE_API_URL, fetchData, renderMessages, csrfEndpoint, fetchCsrfToken, escapeContent, loadPage, fetchSearchResults, postMessage, showPopup, quotePost, hidePopup, updatePagination, handleScrollButtons;
   return _regeneratorRuntime().wrap(function _callee6$(_context6) {
     while (1) switch (_context6.prev = _context6.next) {
       case 0:
@@ -30,42 +30,54 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
         currentPage = 1;
         postsPerPage = 60;
         csrfToken = "";
+        BASE_API_URL = "https://api.9u9.jp";
         fetchData = /*#__PURE__*/function () {
           var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(url) {
-            var response, data;
+            var apiUrl, response, data;
             return _regeneratorRuntime().wrap(function _callee$(_context) {
               while (1) switch (_context.prev = _context.next) {
                 case 0:
                   _context.prev = 0;
-                  _context.next = 3;
-                  return fetch(url);
-                case 3:
+                  apiUrl = "".concat(BASE_API_URL).concat(url);
+                  _context.next = 4;
+                  return fetch(apiUrl, {
+                    headers: {
+                      "Content-Type": "application/json"
+                    }
+                  });
+                case 4:
                   response = _context.sent;
-                  _context.next = 6;
+                  if (response.ok) {
+                    _context.next = 7;
+                    break;
+                  }
+                  throw new Error("HTTP\u30A8\u30E9\u30FC: ".concat(response.status, " (").concat(response.statusText, ")"));
+                case 7:
+                  _context.next = 9;
                   return response.json();
-                case 6:
+                case 9:
                   data = _context.sent;
                   if (!(data.result === "success")) {
-                    _context.next = 11;
+                    _context.next = 14;
                     break;
                   }
                   return _context.abrupt("return", data);
-                case 11:
-                  console.error("データの取得に失敗しました。");
+                case 14:
+                  console.error("APIエラー:", data.message || "詳細なエラー情報なし");
                   return _context.abrupt("return", null);
-                case 13:
-                  _context.next = 19;
+                case 16:
+                  _context.next = 22;
                   break;
-                case 15:
-                  _context.prev = 15;
+                case 18:
+                  _context.prev = 18;
                   _context.t0 = _context["catch"](0);
-                  console.error("エラーが発生しました:", _context.t0);
+                  console.error("ネットワークエラーが発生しました:", _context.t0);
                   return _context.abrupt("return", null);
-                case 19:
+                case 22:
                 case "end":
                   return _context.stop();
               }
-            }, _callee, null, [[0, 15]]);
+            }, _callee, null, [[0, 18]]);
           }));
           return function fetchData(_x) {
             return _ref2.apply(this, arguments);
@@ -404,11 +416,11 @@ document.addEventListener('DOMContentLoaded', /*#__PURE__*/_asyncToGenerator(/*#
             fetchSearchResults(keyword);
           }
         });
-        _context6.next = 47;
+        _context6.next = 48;
         return fetchCsrfToken();
-      case 47:
-        loadPage(currentPage, true);
       case 48:
+        loadPage(currentPage, true);
+      case 49:
       case "end":
         return _context6.stop();
     }
