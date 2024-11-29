@@ -15,14 +15,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const popup = document.getElementById('popup');
     const closePopup = document.getElementById('closePopup');
     const useIdCheckbox = document.getElementById("use_id");
-    
+    const BASE_API_URL = "https://api.9u9.jp"
     let currentPage = 1;
     const postsPerPage = 60;
     let csrfToken = "";
 
     const fetchData = async (url) => {
         try {
-            const response = await fetch(url);
+            const api_url = `${BASE_API_URL}${url}`
+            const response = await fetch(api_url);
             const data = await response.json();
             if (data.result === "success") {
                 return data;
