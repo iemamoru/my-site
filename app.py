@@ -38,13 +38,12 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 def index():
-    print(f"IPアドレス {request.headers.getlist("X-Forwarded-For")}")
-    
     if request.headers.getlist("X-Forwarded-For"):
         user_ip = request.headers.getlist("X-Forwarded-For")[0]
+        print(f"ちゃんと {user_ip}")  # 修正済み: 内部の文字列はエスケープ不要
     else:
         user_ip = request.remote_addr
-        
+        print(f"だめ {user_ip}")  
     user_language = get_user_language(user_ip)
     return redirect(f'/{user_language}/home')
 
