@@ -37,24 +37,16 @@ IPINFO_API_TOKEN = os.getenv("IPINFO_API_TOKEN")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-def index():
-    if request.headers.getlist("X-Forwarded-For"):
-        user_ip = request.headers.getlist("X-Forwarded-For")[0]
-        print(f"ちゃんと {user_ip}")  # 修正済み: 内部の文字列はエスケープ不要
-    else:
-        user_ip = request.remote_addr
-        print(f"だめ {user_ip}")  
-    user_language = get_user_language(user_ip)
-    return redirect(f'/{user_language}/home')
-
 CSRF_API_ENDPOINT = f"/realfightchangairukarakosobokuhatsukematsugewokaerunokamoshirenai/e0jwpe3rh9eehr30wp"
 
 @app.route('/')
 def index():
     if request.headers.getlist("X-Forwarded-For"):
         user_ip = request.headers.getlist("X-Forwarded-For")[0]
+        print(f"ちゃんと {user_ip}")
     else:
         user_ip = request.remote_addr
+        print(f"だめ {user_ip}")  
     user_language = get_user_language(user_ip)
     return redirect(f'/{user_language}/home')
 
