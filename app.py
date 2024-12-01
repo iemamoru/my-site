@@ -11,6 +11,7 @@ import string
 import re
 import uuid
 from PIL import Image
+import requests
 
 # Load environment variables
 load_dotenv()
@@ -31,13 +32,19 @@ messages = db.messages
 users = db.users
 
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
+IPINFO_API_TOKEN = os.getenv("IPINFO_API_TOKEN")
+
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
 def index():
+    print(f"IPアドレス {request.headers.getlist("X-Forwarded-For")}")
+    
     if request.headers.getlist("X-Forwarded-For"):
         user_ip = request.headers.getlist("X-Forwarded-For")[0]
     else:
         user_ip = request.remote_addr
+        
     user_language = get_user_language(user_ip)
     return redirect(f'/{user_language}/home')
 
@@ -52,14 +59,30 @@ def index():
     user_language = get_user_language(user_ip)
     return redirect(f'/{user_language}/home')
 
-
 @app.route('/<lang>/<page>')
 def render_page(lang, page):
     if lang not in ['en', 'ja']:
         return redirect('/')
     return render_template(f"{lang}/{page}.html")
 
-
+def get_user_language(ip):
+    """
+    IPアドレスを使ってユーザーの言語を推定。
+    ipinfo.io APIを利用して国コードを取得します。
+    """
+    try:
+        response = requests.get(f"https://ipinfo.io/{ip}?token={IPINFO_API_TOKEN}")
+        if response.status_code == 200:
+            data = response.json()
+            country = data.get("country", "US") 
+            return "ja" if country == "JP" else "en"
+        else:
+            print(f"IP info API error: {response.status_code}")
+            return "ja"
+    except Exception as e:
+        print(f"Error fetching IP info: {e}")
+        return "ja"  
+    
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
