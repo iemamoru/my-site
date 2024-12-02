@@ -12,6 +12,7 @@ import re
 import uuid
 from PIL import Image
 import requests
+from jinja2 import TemplateNotFound
 
 # Load environment variables
 load_dotenv()
@@ -46,16 +47,20 @@ def index():
         print(f"ちゃんと {user_ip}")
     else:
         user_ip = request.remote_addr
-        print(f"だめ {user_ip}")  
+        print(f"だめ {user_ip}{request.headers}")  
     user_language = get_user_language(user_ip)
-    return redirect(f'/{user_language}/home')
+    return redirect(f"/{user_language}/home")
 
 @app.route('/<lang>/<page>')
 def render_page(lang, page):
     if lang not in ['en', 'ja']:
         return redirect('/')
-    return render_template(f"{lang}/{page}.html")
-
+        print(f"Lang: {lang}, Page: {page}")
+    try:
+        return render_template(f"{lang}/{page}.html")
+    except TemplateNotFound:
+        return render_template(f"{lang}/404.html"), 404
+    
 def get_user_language(ip):
     """
     IPアドレスを使ってユーザーの言語を推定。
@@ -333,6 +338,7 @@ def check_csrf_in_session():
         print("CSRF token not found in session.")
     else:
         print(f"CSRF token in session: {session['csrf_token']}")
+
 
 if __name__ == '__main__':
     app.run()
