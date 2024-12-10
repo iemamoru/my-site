@@ -324,7 +324,7 @@ def index():
     else:
         user_ip = request.remote_addr
         print(f"Bad IP: {user_ip}{request.headers}")  
-    return redirect("/home")
+    return redirect("/square")
 
 # ページへリダイレクトする関数
 @app.route('/<page>')
