@@ -1,7 +1,7 @@
 const chatBoard = document.getElementById("chatBoard");
 
 async function loadMessages() {
-    const response = await axios.get('/en/open-chat/messages');
+    const response = await axios.get('/open-chat/messages');
     const messages = response.data;
 
     chatBoard.innerHTML = '';
@@ -40,7 +40,7 @@ async function postMessage() {
     const textSize = document.getElementById("text_size").value;
     const quotedContent = document.getElementById("quoted_content").value;
 
-    await axios.post('/en/open-chat/post', { username, content, text_color: textColor, text_size: textSize, quoted_content: quotedContent });
+    await axios.post('/open-chat/post', { username, content, text_color: textColor, text_size: textSize, quoted_content: quotedContent });
     loadMessages();
 }
 
@@ -49,7 +49,7 @@ function quoteMessage(content) {
 }
 
 async function reactToMessage(id, reaction) {
-    await axios.post(`/en/open-chat/react/${id}`, { reaction });
+    await axios.post(`/open-chat/react/${id}`, { reaction });
     loadMessages();
 }
 

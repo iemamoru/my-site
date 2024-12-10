@@ -1,30 +1,25 @@
-from flask import Flask, render_template, redirect, request, jsonify, session
-from pymongo import MongoClient
-from flask_cors import CORS
 import os
 import datetime
 import secrets
-from dotenv import load_dotenv
-from werkzeug.utils import secure_filename
 import random
 import string
 import re
 import uuid
-from PIL import Image
+
+from flask import Flask, render_template, redirect, request, jsonify, session
+from flask_cors import CORS
+from pymongo import MongoClient
+from dotenv import load_dotenv
+from werkzeug.utils import secure_filename
 import requests
 from jinja2 import TemplateNotFound
 
-# Load environment variables
 load_dotenv()
 
-# App and DB setup
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(64))
 app.permanent_session_lifetime = datetime.timedelta(days=7)
 
-CORS(app, resources={
-    r"/*": {"origins": ["https://9u9.jp"], "supports_credentials": True}
-})
 
 mongo_uri = os.getenv("MONGO_URI")
 client = MongoClient(mongo_uri)
@@ -38,29 +33,11 @@ IPINFO_API_TOKEN = os.getenv("IPINFO_API_TOKEN")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-CSRF_API_ENDPOINT = f"/realfightchangairukarakosobokuhatsukematsugewokaerunokamoshirenai/e0jwpe3rh9eehr30wp"
+CSRF_API_ENDPOINT = "/realfightchangairukarakosobokuhatsukematsugewokaerunokamoshirenai/e0jwpe3rh9eehr30wp"
+CDN_BASE_URL = ""
+ALLOWED_EXTENSIONS = ""
 
-@app.route('/')
-def index():
-    if request.headers.getlist("X-Forwarded-For"):
-        user_ip = request.headers.getlist("X-Forwarded-For")[0]
-        print(f"ちゃんと {user_ip}")
-    else:
-        user_ip = request.remote_addr
-        print(f"だめ {user_ip}{request.headers}")  
-    user_language = get_user_language(user_ip)
-    return redirect(f"/{user_language}/home")
-
-@app.route('/<lang>/<page>')
-def render_page(lang, page):
-    if lang not in ['en', 'ja']:
-        return redirect('/')
-        print(f"Lang: {lang}, Page: {page}")
-    try:
-        return render_template(f"{lang}/{page}.html")
-    except TemplateNotFound:
-        return render_template(f"{lang}/404.html"), 404
-    
+ 
 def get_user_language(ip):
     """
     IPアドレスを使ってユーザーの言語を推定。
@@ -339,6 +316,23 @@ def check_csrf_in_session():
     else:
         print(f"CSRF token in session: {session['csrf_token']}")
 
+@app.route('/')
+def index():
+    if request.headers.getlist("X-Forwarded-For"):
+        user_ip = request.headers.getlist("X-Forwarded-For")[0]
+        print(f"good IP: {user_ip}")
+    else:
+        user_ip = request.remote_addr
+        print(f"Bad IP: {user_ip}{request.headers}")  
+    return redirect("/home")
 
+# ページへリダイレクトする関数
+@app.route('/<page>')
+def render_page(page):
+    try:
+        return render_template(f"{page}.html")
+    except TemplateNotFound:
+        return render_template(f"maigo.html"), 404
+   
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000)
