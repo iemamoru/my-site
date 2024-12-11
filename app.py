@@ -29,6 +29,7 @@ users = db.users
 
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
 IPINFO_API_TOKEN = os.getenv("IPINFO_API_TOKEN")
+DEBUGMODE = os.getenv('DEBUGMODE')
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -39,10 +40,6 @@ ALLOWED_EXTENSIONS = ""
 
  
 def get_user_language(ip):
-    """
-    IPアドレスを使ってユーザーの言語を推定。
-    ipinfo.io APIを利用して国コードを取得します。
-    """
     try:
         response = requests.get(f"https://ipinfo.io/{ip}?token={IPINFO_API_TOKEN}")
         if response.status_code == 200:
@@ -316,40 +313,37 @@ def check_csrf_in_session():
     else:
         print(f"CSRF token in session: {session['csrf_token']}")
 
-# @app.route('/')
-# def index():
-#     if request.headers.getlist("X-Forwarded-For"):
-#         user_ip = request.headers.getlist("X-Forwarded-For")[0]
-#         print(f"good IP: {user_ip}")
-#     else:
-#         user_ip = request.remote_addr
-#         print(f"Bad IP: {user_ip}{request.headers}")  
-#     # return redirect("/square")
-
 @app.route('/', methods=['GET', 'HEAD'])
 def index():
     if request.headers.getlist("X-Forwarded-For"):
         user_ip = request.headers.getlist("X-Forwarded-For")[0]
-        print(f"good IP: {user_ip}")
+        print(f"Good IP: {user_ip}")
     else:
         user_ip = request.remote_addr
-        print(f"Bad IP: {user_ip}{request.headers}")
+        print(f"Bad IP: {user_ip} : {request.headers}")
     
     if request.method == 'HEAD':
-        # HEADリクエストに対して空のレスポンスを返す
         return '', 200
 
-    # GETリクエストの場合にリダイレクトを返す
-    return redirect("/home")
+    return redirect("/popo-square")
 
-# ページへリダイレクトする関数
+title = {
+    'popo-square': 'ぽぽスクエア'
+}
+
 @app.route('/<page>')
 def render_page(page):
     try:
-        return render_template(f"{page}.html")
+        page_name = title.get(page, "")
+        if page_name:
+            page_name = f" | {page_name}"
+        return render_template(f"{page}.html", title=f"ぽぽち2丁目{page_name}")
     except TemplateNotFound:
-        return render_template(f"maigo.html"), 404
-   
+        return render_template("maigo.html"), 404
+
 if __name__ == '__main__':
-    #app.run(debug=True)
-    app.run(host='0.0.0.0', port=5000)
+    if DEBUGMODE and DEBUGMODE == 'true':
+        app.run(debug=True)
+    else:
+        app.run(host='0.0.0.0', port=5000)
+

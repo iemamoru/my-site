@@ -9,9 +9,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/1_12529252-2728-b1d0-43ef-3104bc7e7531.css') }}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg" style="background-color: #ff0000;">
-            <a class="navbar-brand mx-auto" href="/home">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" 
+    <div id="threejs-bg"></div>
+    <nav class="navbar navbar-expand-lg">
+            <a class="navbar-brand mx-auto" href="/popo-square">
+                <img src="{{ url_for('static', filename='img/popochi-board.webp') }}" 
                         alt="Site Logo" 
                         class="img-fluid" 
                         style="max-height: 120px;">
@@ -23,4 +24,297 @@
         {% block content %}{% endblock %}
     </div>
 </body>
+<!-- <div id="threejs-bg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></div> -->
+<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+    
+<script type="importmap">
+	{
+		"imports": {
+			"three": "https://unpkg.com/three/build/three.module.js"
+		}
+	}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.154.0/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js"></script>
+<script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.module.js';
+    import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.154.0/examples/jsm/controls/OrbitControls.js';
+    import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.154.0/examples/jsm/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.154.0/examples/jsm/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.154.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+
+    // Scene, Camera, and Renderer setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setClearColor(0x000000);
+    document.getElementById('threejs-bg').appendChild(renderer.domElement);
+
+    // Fog setup for depth
+    scene.fog = new THREE.FogExp2(0x220033, 0.03); // Purple fog for atmosphere
+
+    // Ambient lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+    scene.add(ambientLight);
+
+    // Lights for atmosphere
+    const pinkLight = new THREE.PointLight(0xff00ff, 1.2, 500);
+    pinkLight.position.set(0, 50, 100);
+    scene.add(pinkLight);
+
+    const purpleLight = new THREE.PointLight(0x9900ff, 1.5, 500);
+    purpleLight.position.set(-50, 50, -200);
+    scene.add(purpleLight);
+
+    const backLight = new THREE.PointLight(0xccccff, 2.0, 800);
+    backLight.position.set(0, 100, -500);
+    scene.add(backLight);
+
+    // Ground setup
+    const groundTexture = new THREE.TextureLoader().load('/static/img/concrete-texture.webp');
+    groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+    groundTexture.repeat.set(50, 50);
+
+    const ground = new THREE.Mesh(
+        new THREE.PlaneGeometry(400, 400),
+        new THREE.MeshStandardMaterial({ map: groundTexture, roughness: 0.8, metalness: 0.3 })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    scene.add(ground);
+
+    // Road setup
+    const road = new THREE.Mesh(
+        new THREE.PlaneGeometry(40, 400),
+        new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 1, metalness: 0.1 })
+    );
+    road.rotation.x = -Math.PI / 2;
+    road.position.y = 0.02;
+    scene.add(road);
+
+    // Billboard list
+    const signs = [];
+    const textureLoader = new THREE.TextureLoader();
+
+    // Function to create stars
+    function createStars() {
+        const starMaterial = new THREE.MeshStandardMaterial({ emissive: 0xffffff, emissiveIntensity: 1.2 });
+        for (let i = 0; i < 100; i++) {
+            const star = new THREE.Mesh(new THREE.SphereGeometry(0.3, 8, 8), starMaterial);
+            star.position.set(
+                Math.random() * 800 - 400, // Random x
+                Math.random() * 200 + 50, // Random height
+                Math.random() * -800 // Random depth
+            );
+            scene.add(star);
+        }
+    }
+
+    // Function to create clouds
+    function createClouds() {
+        const cloudTexture = textureLoader.load('/static/img/cloud-texture.webp'); // Cloud texture
+        cloudTexture.wrapS = cloudTexture.wrapT = THREE.RepeatWrapping;
+        const cloudMaterial = new THREE.MeshStandardMaterial({
+            map: cloudTexture,
+            transparent: true,
+            opacity: 0.5,
+        });
+        for (let i = 0; i < 5; i++) {
+            const cloud = new THREE.Mesh(new THREE.PlaneGeometry(200, 100), cloudMaterial);
+            cloud.position.set(Math.random() * 400 - 200, 150 + Math.random() * 50, -400 - i * 100);
+            cloud.rotation.y = Math.random() * Math.PI;
+            scene.add(cloud);
+
+            // Animate clouds
+            function animateCloud() {
+                cloud.position.z += 0.05;
+                if (cloud.position.z > 200) cloud.position.z = -800;
+                requestAnimationFrame(animateCloud);
+            }
+            animateCloud();
+        }
+    }
+
+    // Function to add floating drones
+    function createDrones() {
+        const droneMaterial = new THREE.MeshStandardMaterial({ color: 0x9999ff, emissive: 0x4444ff, emissiveIntensity: 1.0 });
+        for (let i = 0; i < 10; i++) {
+            const drone = new THREE.Mesh(new THREE.SphereGeometry(2, 16, 16), droneMaterial);
+            drone.position.set(
+                Math.random() * 200 - 100,
+                Math.random() * 50 + 20,
+                Math.random() * -400
+            );
+            scene.add(drone);
+
+            // Drone animation
+            function animateDrone() {
+                drone.position.y += Math.sin(Date.now() * 0.001) * 0.05;
+                drone.position.x += Math.sin(Date.now() * 0.0005 + i) * 0.05;
+                requestAnimationFrame(animateDrone);
+            }
+            animateDrone();
+        }
+    }
+
+    // Generate buildings
+    function createBuildings() {
+        for (let z = -200; z <= 200; z += 30) {
+            for (let x = -50; x <= 50; x += 40) {
+                const width = Math.random() * 10 + 10;
+                const depth = Math.random() * 10 + 10;
+                const height = Math.random() * 50 + 30;
+                createBuilding(x, z, width, depth, height);
+            }
+        }
+
+    }
+
+    // Building creation function
+    function createBuilding(x, z, width, depth, height) {
+        const buildingGeometry = new THREE.BoxGeometry(width, height, depth);
+        const buildingMaterial = new THREE.MeshStandardMaterial({
+            color: 0x222222,
+            emissive: 0x330066,
+            emissiveIntensity: 0.5,
+        });
+        const building = new THREE.Mesh(buildingGeometry, buildingMaterial);
+        building.position.set(x, height / 2, z);
+        scene.add(building);
+        
+        // Add windows (glowing yellow)
+        const windowMaterial = new THREE.MeshStandardMaterial({
+            emissive: 0xffff33,
+            emissiveIntensity: 1.0,
+        });
+
+        const addWindows = (side) => {
+            for (let y = 2; y < height; y += 4) {
+                for (let offset = -width / 2 + 2; offset < width / 2; offset += 4) {
+                    const window = new THREE.Mesh(new THREE.BoxGeometry(1, 2, 0.1), windowMaterial);
+                    if (side === "front") {
+                        window.position.set(x + offset, y, z + depth / 2 + 0.1);
+                    } else if (side === "back") {
+                        window.position.set(x + offset, y, z - depth / 2 - 0.1);
+                    } else if (side === "left") {
+                        window.position.set(x - width / 2 - 0.1, y, z + offset);
+                    } else if (side === "right") {
+                        window.position.set(x + width / 2 + 0.1, y, z + offset);
+                    }
+                    scene.add(window);
+                }
+            }
+        };
+
+        addWindows("front");
+        addWindows("back");
+        addWindows("left");
+        addWindows("right");
+        for (let i = 0; i < 20; i++) {
+            const randomIndex = Math.floor(Math.random() * 3) + 1; // Randomly select texture between 1 and 3
+            const texture = textureLoader.load(`/static/img/board/neon-sign-${randomIndex}.webp`);
+            const depthFactor = Math.max(0.5, 1.5 - Math.abs(z) / 200); // Dimmer closer, stronger deeper
+
+            const neonMaterial = new THREE.MeshStandardMaterial({
+                map: texture,
+                emissive: 0xffffff,
+                emissiveMap: texture,
+                emissiveIntensity: depthFactor,
+            });
+
+            // Create sign and organize placement
+            const sign = new THREE.Mesh(new THREE.BoxGeometry(5, 3, 0.2), neonMaterial);
+
+            // Evenly space signs along the building height and width
+            const rows = 4; // Number of vertical rows
+            const columns = 5; // Number of horizontal columns
+            const verticalSpacing = height / (rows + 1); // Space between rows
+            const horizontalSpacing = width / (columns + 1); // Space between columns
+
+            const row = Math.floor(i / columns); // Determine current row
+            const col = i % columns; // Determine current column
+
+            // Align the sign along the front of the building
+            sign.position.set(
+                x -2 - width / 2 + (col + 1) * horizontalSpacing, // Horizontal alignment
+                row * verticalSpacing + verticalSpacing, // Vertical alignment
+                z + depth / 2 + 0.2 // Slightly in front of the building
+            );
+
+            scene.add(sign);
+            signs.push({ mesh: sign });
+        }
+
+    }
+
+    // Generate cars moving in opposite directions
+    const cars = [];
+    function createCars() {
+        for (let i = -180; i <= 180; i += 20) {
+            cars.push(createCar(-10, i, "forward")); // Moving forward
+            cars.push(createCar(10, i, "backward")); // Moving backward
+        }
+    }
+
+    function createCar(x, z, direction) {
+        const carBodyGeometry = new THREE.BoxGeometry(4, 2, 8);
+        const carBodyMaterial = new THREE.MeshStandardMaterial({ color: Math.random() * 0xffffff });
+        const car = new THREE.Mesh(carBodyGeometry, carBodyMaterial);
+        car.position.set(x, 1, z);
+        car.userData.direction = direction;
+        scene.add(car);
+        return car;
+    }
+
+    // Postprocessing with bloom effect
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.3, 0.8);
+    composer.addPass(bloomPass);
+
+    // Initialize everything
+    createStars();
+    createClouds();
+    createDrones();
+    createBuildings();
+    createCars();
+
+    // Camera setup
+    camera.position.set(0, 30, 200);
+    camera.lookAt(0, 10, 0);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 10, 0);
+    controls.update();
+
+    // Animation loop
+    function animate() {
+        requestAnimationFrame(animate);
+
+        // Move cars
+        cars.forEach((car) => {
+            if (car.userData.direction === "forward") {
+                car.position.z += 0.5;
+                if (car.position.z > 200) car.position.z = -200;
+            } else {
+                car.position.z -= 0.5;
+                if (car.position.z < -200) car.position.z = 200;
+            }
+        });
+
+        composer.render();
+    }
+    animate();
+
+    // Handle resizing
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+    });
+</script>
+
+
 </html>

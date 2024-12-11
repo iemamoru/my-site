@@ -295,4 +295,3 @@ document.addEventListener('DOMContentLoaded', async () => {
     await fetchCsrfToken();
     loadPage(currentPage, true);
 });
-    
