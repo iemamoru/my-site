@@ -316,15 +316,31 @@ def check_csrf_in_session():
     else:
         print(f"CSRF token in session: {session['csrf_token']}")
 
-@app.route('/')
+# @app.route('/')
+# def index():
+#     if request.headers.getlist("X-Forwarded-For"):
+#         user_ip = request.headers.getlist("X-Forwarded-For")[0]
+#         print(f"good IP: {user_ip}")
+#     else:
+#         user_ip = request.remote_addr
+#         print(f"Bad IP: {user_ip}{request.headers}")  
+#     # return redirect("/square")
+
+@app.route('/', methods=['GET', 'HEAD'])
 def index():
     if request.headers.getlist("X-Forwarded-For"):
         user_ip = request.headers.getlist("X-Forwarded-For")[0]
         print(f"good IP: {user_ip}")
     else:
         user_ip = request.remote_addr
-        print(f"Bad IP: {user_ip}{request.headers}")  
-    # return redirect("/square")
+        print(f"Bad IP: {user_ip}{request.headers}")
+    
+    if request.method == 'HEAD':
+        # HEADリクエストに対して空のレスポンスを返す
+        return '', 200
+
+    # GETリクエストの場合にリダイレクトを返す
+    return redirect("/home")
 
 # ページへリダイレクトする関数
 @app.route('/<page>')
