@@ -324,7 +324,7 @@ def index():
     else:
         user_ip = request.remote_addr
         print(f"Bad IP: {user_ip}{request.headers}")  
-    return redirect("/square")
+    # return redirect("/square")
 
 # ページへリダイレクトする関数
 @app.route('/<page>')
@@ -335,4 +335,5 @@ def render_page(page):
         return render_template(f"maigo.html"), 404
    
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True)
+    #app.run(host='0.0.0.0', port=5000)
